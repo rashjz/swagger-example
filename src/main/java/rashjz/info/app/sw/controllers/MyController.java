@@ -20,20 +20,13 @@ public class MyController {
     @GetMapping("/")
     public String init(Map<String, Object> model, Principal principal) {
         model.put("title", "PUBLIC AREA");
-        model.put("message", "Any user can view this page");
+        model.put("message", "Only Authorised user can view this page");
         model.put("username", getUserName(principal));
         model.put("userroles", getUserRoles(principal));
         return "home";
     }
 
-    @RequestMapping("/secure")
-    public String secure(Map<String, Object> model, Principal principal) {
-        model.put("title", "SECURE AREA");
-        model.put("message", "Only Authorised Users Can See This Page");
-        model.put("username", getUserName(principal));
-        model.put("userroles", getUserRoles(principal));
-        return "home";
-    }
+
 
     private String getUserName(Principal principal) {
         if (principal == null) {
