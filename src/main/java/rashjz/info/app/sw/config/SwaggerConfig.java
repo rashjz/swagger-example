@@ -31,7 +31,6 @@ public class SwaggerConfig {
                 .select().apis(RequestHandlerSelectors.basePackage("rashjz.info.app.sw.controllers"))
                 .paths(regex("/product.*"))
                 .build();
-
     }
 
     private ApiInfo metaData() {
