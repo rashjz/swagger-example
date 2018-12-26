@@ -5,18 +5,25 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import rashjz.info.app.sw.domain.Person;
 import rashjz.info.app.sw.domain.Product;
+import rashjz.info.app.sw.respositories.PersonRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 @Slf4j
 @RestController
-@Api(value = "product-details", description = "Operations pertaining to products")
+@RequestMapping("api")
+@Api(value = "product-details", description = "Api Operations of application")
 public class HomeController {
+    private final PersonRepository personRepository;
 
-    @GetMapping("/private/get-details")
-    public String getAppDetails() {
-        return "get-details";
+    @Autowired
+    public HomeController(final PersonRepository personRepository) {
+        this.personRepository = personRepository;
     }
 
 
@@ -28,7 +35,7 @@ public class HomeController {
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
 
     })
-    @GetMapping("/product/get-details/{productId}")
+    @GetMapping("/product/{productId}")
     public Product getAppProductDetails(@PathVariable(name = "productId") BigDecimal productId) {
         return Product.builder()
                 .productId(productId)
@@ -38,7 +45,6 @@ public class HomeController {
     }
 
 
-
     @ApiOperation(value = "Save product in database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully saved"),
@@ -46,7 +52,9 @@ public class HomeController {
     })
     @PostMapping("/product/save")
     public Product saveProduct(@RequestBody Product product) {
-      log.info("product saved {}",product.toString());
-      return product;
+        log.info("product saved {}", product.toString());
+        return product;
     }
+
+
 }

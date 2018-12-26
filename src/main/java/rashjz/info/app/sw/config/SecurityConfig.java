@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @EnableGlobalMethodSecurity(securedEnabled = true)
