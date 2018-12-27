@@ -3,18 +3,21 @@ package rashjz.info.app.sw.respositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.BaseLdapNameAware;
+import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.SearchScope;
 import org.springframework.ldap.support.LdapNameBuilder;
 import org.springframework.ldap.support.LdapUtils;
- import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Repository;
+import rashjz.info.app.sw.config.properties.LdapProperties;
 import rashjz.info.app.sw.domain.Person;
 import rashjz.info.app.sw.mappings.PersonAttributesMapper;
 import rashjz.info.app.sw.mappings.PersonContextMapper;
-import rashjz.info.app.sw.util.LdapProperties;
+import rashjz.info.app.sw.util.LdapSchema;
 
+import javax.annotation.PostConstruct;
 import javax.naming.Name;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -26,15 +29,26 @@ import java.util.List;
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 @Repository
-public class PersonRepository  implements BaseLdapNameAware {
+public class PersonRepository implements BaseLdapNameAware {
     private static final Integer THREE_SECONDS = 3000;
 
-    private final LdapTemplate ldapTemplate;
+    private LdapTemplate ldapTemplate;
     private LdapName baseLdapPath;
 
+    private final LdapProperties ldapProperties;
+
     @Autowired
-    public PersonRepository(LdapTemplate ldapTemplate) {
-        this.ldapTemplate = ldapTemplate;
+    public PersonRepository(LdapProperties ldapProperties) {
+        this.ldapProperties = ldapProperties;
+    }
+
+    @PostConstruct
+    private void init() {
+        LdapContextSource ldapContextSource = new LdapContextSource();
+        ldapContextSource.setUrl("ldap://localhost:" + ldapProperties.getPort());
+        ldapContextSource.setBase(ldapProperties.getBaseDn());
+        ldapContextSource.afterPropertiesSet();
+        ldapTemplate = new LdapTemplate(ldapContextSource);
     }
 
 
@@ -48,12 +62,12 @@ public class PersonRepository  implements BaseLdapNameAware {
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(THREE_SECONDS)
                 .countLimit(10)
-                .attributes(LdapProperties.USER_NAME.getValue())
+                .attributes(LdapSchema.USER_NAME.getValue())
                 .base(LdapUtils.emptyLdapName())
-                .where(LdapProperties.OBJECT_CLASS.getValue()).is("person")
-                .and(LdapProperties.LAST_NAME.getValue()).not().is(lastName)
-                .and(LdapProperties.LAST_NAME.getValue()).like("j*hn")
-                .and(LdapProperties.UID.getValue()).isPresent();
+                .where(LdapSchema.OBJECT_CLASS.getValue()).is("person")
+                .and(LdapSchema.LAST_NAME.getValue()).not().is(lastName)
+                .and(LdapSchema.LAST_NAME.getValue()).like("j*hn")
+                .and(LdapSchema.UID.getValue()).isPresent();
 
         return ldapTemplate.search(query, new PersonAttributesMapper());
     }
@@ -64,10 +78,10 @@ public class PersonRepository  implements BaseLdapNameAware {
         sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
         sc.setTimeLimit(THREE_SECONDS);
         sc.setCountLimit(10);
-        sc.setReturningAttributes(new String[]{LdapProperties.USER_NAME.getValue(),
-                LdapProperties.UID.getValue(),
-                LdapProperties.PASSWORD.getValue(),
-                LdapProperties.LAST_NAME.getValue()});
+        sc.setReturningAttributes(new String[]{LdapSchema.USER_NAME.getValue(),
+                LdapSchema.UID.getValue(),
+                LdapSchema.PASSWORD.getValue(),
+                LdapSchema.LAST_NAME.getValue()});
 
         String filter = "(&(objectclass=top)(sn=" + lastName + "))";
         return ldapTemplate.search(LdapUtils.emptyLdapName(), filter, sc, new PersonAttributesMapper());
@@ -79,31 +93,40 @@ public class PersonRepository  implements BaseLdapNameAware {
         sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
         sc.setTimeLimit(THREE_SECONDS);
         sc.setCountLimit(10);
-        sc.setReturningAttributes(new String[]{LdapProperties.USER_NAME.getValue()});
+        sc.setReturningAttributes(new String[]{LdapSchema.USER_NAME.getValue()});
 
         AndFilter filter = new AndFilter();
-        filter.and(new EqualsFilter(LdapProperties.OBJECT_CLASS.getValue(), "person"));
-        filter.and(new EqualsFilter(LdapProperties.LAST_NAME.getValue(), lastName));
+        filter.and(new EqualsFilter(LdapSchema.OBJECT_CLASS.getValue(), "person"));
+        filter.and(new EqualsFilter(LdapSchema.LAST_NAME.getValue(), lastName));
 
         return ldapTemplate.search(LdapUtils.emptyLdapName(), filter.encode(), sc, new PersonAttributesMapper());
     }
-
 
 
     public void create(Person p) {
         Name dn = buildDn(p);
         ldapTemplate.bind(dn, null, buildAttributes(p));
     }
+
     public List<Person> findByName(String name) {
         LdapQuery q = query()
-                .where("objectclass").is("person")
-                .and("cn").whitespaceWildcardsLike(name);
+                .where(LdapSchema.OBJECT_CLASS.getValue()).is("person")
+                .and(LdapSchema.USER_NAME.getValue()).whitespaceWildcardsLike(name);
         return ldapTemplate.search(q, new PersonContextMapper());
     }
+
+    public List<Person> findByNameAndPassword(String name, String passw) {
+        LdapQuery q = query()
+                .where(LdapSchema.OBJECT_CLASS.getValue()).is("person")
+                .and(LdapSchema.USER_NAME.getValue()).whitespaceWildcardsLike(name)
+                .and("userPassword").whitespaceWildcardsLike(passw);
+        return ldapTemplate.search(q, new PersonContextMapper());
+    }
+
     private Name buildDn(Person p) {
         return LdapNameBuilder.newInstance()
-                .add("ou", "people")
-                .add("uid", p.getUid())
+                .add(LdapSchema.OU.getValue(), "people")
+                .add(LdapSchema.UID.getValue(), p.getUid())
                 .build();
     }
 
@@ -113,14 +136,13 @@ public class PersonRepository  implements BaseLdapNameAware {
         objectClass.add("top");
         objectClass.add("person");
         attrs.put(objectClass);
-        attrs.put("ou", "people");
-        attrs.put("cn", p.getFullName());
-        attrs.put("sn", p.getLastName());
-        attrs.put("uid", p.getUid());
-        attrs.put("userPassword", p.getUserPassword());
+        attrs.put(LdapSchema.OU.getValue(), "people");
+        attrs.put(LdapSchema.USER_NAME.getValue(), p.getFullName());
+        attrs.put(LdapSchema.LAST_NAME.getValue(), p.getLastName());
+        attrs.put(LdapSchema.UID.getValue(), p.getUid());
+        attrs.put(LdapSchema.PASSWORD.getValue(), p.getUserPassword());
         return attrs;
     }
-
 
 
 }

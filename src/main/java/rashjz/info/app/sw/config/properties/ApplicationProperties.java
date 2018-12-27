@@ -1,4 +1,4 @@
-package rashjz.info.app.sw.config;
+package rashjz.info.app.sw.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

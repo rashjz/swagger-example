@@ -2,26 +2,27 @@ package rashjz.info.app.sw.util;
 
 import java.util.Arrays;
 
-public enum LdapProperties {
+public enum LdapSchema {
 
     USER_NAME("cn"),
     LAST_NAME("sn"),
     PASSWORD("userPassword"),
     UID("uid"),
+    OU("ou"),
     OBJECT_CLASS("objectclass"),
     NONE("");
 
-    LdapProperties(final String value) {
+    LdapSchema(final String value) {
         this.value = value;
     }
 
       private final String value;
 
-    public static LdapProperties findByVal(String filter) {
+    public static LdapSchema findByVal(String filter) {
         return Arrays.stream(values())
                 .filter(val -> filter.equalsIgnoreCase(val.value))
                 .findFirst()
-                .orElse(LdapProperties.NONE);
+                .orElse(LdapSchema.NONE);
     }
 
     public String getValue() {
