@@ -1,0 +1,43 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+
+    <id>bin</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <baseDirectory>/home/rashad</baseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>.</directory>
+            <outputDirectory>logs</outputDirectory>
+            <excludes>
+                <exclude>*/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>${basedir}</directory>
+            <includes>
+                <include>some_dir</include>
+            </includes>
+            <outputDirectory>target</outputDirectory>
+            <fileMode>0777</fileMode>
+            <directoryMode>0777</directoryMode>
+        </fileSet>
+
+        <fileSet>
+            <directory>/etc/default</directory>
+            <fileMode>000</fileMode>
+            <directoryMode>000</directoryMode>
+        </fileSet>
+    </fileSets>
+
+</assembly>
