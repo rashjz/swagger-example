@@ -17,13 +17,14 @@ import java.util.Collections;
 public class RequestValidatorFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest httpServletRequest,
+                                    HttpServletResponse httpServletResponse,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         Collections.list(httpServletRequest.getHeaderNames())
                 .forEach(e ->
                         log.info("request header name is {}" + e)
                 );
-
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
