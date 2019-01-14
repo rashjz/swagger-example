@@ -16,12 +16,11 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final RequestValidatorFilter requestValidatorFilter;
+
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, RequestValidatorFilter requestValidatorFilter) {
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
         this.customAuthenticationProvider = customAuthenticationProvider;
-        this.requestValidatorFilter = requestValidatorFilter;
     }
 
     @Override
