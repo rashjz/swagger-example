@@ -21,10 +21,10 @@ public class RequestValidatorFilter extends OncePerRequestFilter {
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        Collections.list(httpServletRequest.getHeaderNames())
-                .forEach(e ->
-                        log.info("request header name is {}" + e)
-                );
+//        Collections.list(httpServletRequest.getHeaderNames())
+//                .forEach(e ->
+//                        log.info("request header name is {}" + e)
+//                );
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
