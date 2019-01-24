@@ -2,7 +2,6 @@ package rashjz.info.app.sw.respositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.BaseLdapNameAware;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
@@ -23,17 +22,15 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchControls;
-import javax.naming.ldap.LdapName;
 import java.util.List;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 @Repository
-public class PersonRepository implements BaseLdapNameAware {
+public class PersonRepository  {
     private static final Integer THREE_SECONDS = 3000;
 
     private LdapTemplate ldapTemplate;
-    private LdapName baseLdapPath;
 
     private final LdapProperties ldapProperties;
 
@@ -52,9 +49,6 @@ public class PersonRepository implements BaseLdapNameAware {
     }
 
 
-    public void setBaseLdapPath(LdapName baseLdapPath) {
-        this.baseLdapPath = baseLdapPath;
-    }
 
     public List<Person> getPersonNamesByLastName(String lastName) {
 
@@ -119,7 +113,7 @@ public class PersonRepository implements BaseLdapNameAware {
         LdapQuery q = query()
                 .where(LdapSchema.OBJECT_CLASS.getValue()).is("person")
                 .and(LdapSchema.USER_NAME.getValue()).whitespaceWildcardsLike(name)
-                .and("userPassword").whitespaceWildcardsLike(passw);
+                .and(LdapSchema.PASSWORD.getValue()).whitespaceWildcardsLike(passw);
         return ldapTemplate.search(q, new PersonContextMapper());
     }
 

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import rashjz.info.app.sw.domain.validator.ValidPassword;
 
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 public class Person  implements Serializable {
     private String fullName;
     private String lastName;
+    @ValidPassword
     private String userPassword;
     private String uid;
 }

@@ -10,6 +10,7 @@ public  class PersonContextMapper extends AbstractContextMapper<Person> {
         person.setFullName(context.getStringAttribute("cn"));
         person.setLastName(context.getStringAttribute("sn"));
         person.setUid(context.getStringAttribute("uid"));
+
         return person;
     }
 }

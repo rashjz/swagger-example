@@ -53,8 +53,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private boolean checkLdapUser(String name, String password) {
         List persons = personRepository.findByNameAndPassword(name, password);
-        if (persons.size() > 0) {
-            return persons.get(0) != null;
+        if (persons.isEmpty()) {
+            return  persons.get(0) != null;
         } else {
             throw new BadCredentialsException("Invalid credentials please check your username and password!");
         }
