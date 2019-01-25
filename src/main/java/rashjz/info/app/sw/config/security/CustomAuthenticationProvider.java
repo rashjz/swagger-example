@@ -38,27 +38,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (loginAttemptService.isBlocked(ip)) {
             throw new LockedException("account locked for 10 minutes");
         }
-        String name = authentication.getName();
+        String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        if (checkLdapUser(name, password)) {
-            log.info("Authentication passed with user : {} and password {}", name, password);
+        List persons = personRepository.getPersonByUsernameAndPassword(username, password);
+        if (persons.isEmpty()) {
+            throw new BadCredentialsException("Invalid credentials please check your username and password!");
+        } else {
+            log.info("Authentication passed with user : {} and password {}", username, password);
             return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
                     authentication.getCredentials(),
                     Collections.singletonList((GrantedAuthority) () -> "ROLE_USER"));
-        } else {
-            return null;
         }
     }
 
-    private boolean checkLdapUser(String name, String password) {
-        List persons = personRepository.findByNameAndPassword(name, password);
-        if (persons.isEmpty()) {
-            return  persons.get(0) != null;
-        } else {
-            throw new BadCredentialsException("Invalid credentials please check your username and password!");
-        }
-    }
 
     private String getClientIP() {
         String xfHeader = request.getHeader("X-Forwarded-For");

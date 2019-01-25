@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 @Slf4j
 @RestController
 @RequestMapping("api")
-@Api(value = "product-details", description = "Api Operations of application")
+@Api(value = "product-details")
 public class HomeController {
     private final PersonRepository personRepository;
 
@@ -62,7 +62,6 @@ public class HomeController {
     public Person savePerson(@Valid @ModelAttribute Person person, BeanPropertyBindingResult bindingResult) {
         bindingResult
                 .getFieldErrors()
-                .stream()
                 .forEach(f -> System.out.println(f.getField() + ": " + f.getDefaultMessage()));
 
         log.info("person is {}", person);

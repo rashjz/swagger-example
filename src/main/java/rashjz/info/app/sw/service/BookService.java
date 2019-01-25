@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class BookService {
 
-    final private List<Book> books = BookUtils.buildBooks();
+    private final  List<Book> books = BookUtils.buildBooks();
 
     public Page<Book> findPaginated(Pageable pageable) {
         int pageSize = pageable.getPageSize();

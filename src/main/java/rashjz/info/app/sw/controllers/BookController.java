@@ -5,12 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import rashjz.info.app.sw.domain.Book;
 import rashjz.info.app.sw.service.BookService;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +25,11 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @RequestMapping(value = "/listBooks", method = RequestMethod.GET)
-    public String listBooks(
-            Model model,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size) {
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
+    @GetMapping(value = "/listBooks")
+    public String listBooks(Model model, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+
+        int currentPage = Optional.of(page).orElse(1);
+        int pageSize = Optional.of(size).orElse(5);
 
         Page<Book> bookPage = bookService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
 

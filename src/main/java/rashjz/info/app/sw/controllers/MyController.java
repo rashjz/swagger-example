@@ -26,6 +26,7 @@ public class MyController {
         model.put("title", "PUBLIC AREA");
         model.put("message", "Only Authorised user can view this page");
         model.put("username", SecurityCredential.getUserName(principal));
+        model.put("userroles", SecurityCredential.getUserRoles(principal));
         return "home";
     }
 

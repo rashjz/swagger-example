@@ -24,11 +24,11 @@ public class LoginAttemptService {
         });
     }
 
-    public void loginSucceeded(String key) {
+     void loginSucceeded(String key) {
         attemptsCache.invalidate(key);
     }
 
-    public void loginFailed(String key) {
+     void loginFailed(String key) {
         int attempts;
         try {
             attempts = attemptsCache.get(key);
@@ -39,7 +39,7 @@ public class LoginAttemptService {
         attemptsCache.put(key, attempts);
     }
 
-    public boolean isBlocked(String key) {
+     boolean isBlocked(String key) {
         try {
             return attemptsCache.get(key) >= MAX_ATTEMPT;
         } catch (ExecutionException e) {

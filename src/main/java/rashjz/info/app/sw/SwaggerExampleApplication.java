@@ -34,5 +34,6 @@ public class SwaggerExampleApplication {
 		factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "|{}[]"));
 		return factory;
 	}
+
 }
 
