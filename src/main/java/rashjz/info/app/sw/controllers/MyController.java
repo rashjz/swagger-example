@@ -30,5 +30,8 @@ public class MyController {
         return "home";
     }
 
-
+    @GetMapping("/international")
+    public String getInternationalPage() {
+        return "international";
+    }
 }

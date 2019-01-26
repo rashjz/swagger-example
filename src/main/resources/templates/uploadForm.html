@@ -1,32 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="${title}">Title</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"
-          href="../static/css/bootstrap.min.css"/>
-</head>
 <body>
 <div class="container">
 
-    <div class="navbar">
-        <div class="navbar-inner">
-            <a class="brand" href="#"> Thymeleaf -
-                Plain </a>
-            <ul class="nav">
-                <li><a th:href="@{/}" href="home.html"> Home </a></li>
-                <li><a th:href="@{/listBooks}" > Pagination </a></li>
-                <li><a th:href="@{/upload}" > Upload </a></li>
-                <li><a th:href="@{/logout}"> logout </a></li>
-            </ul>
-        </div>
-    </div>
+    <div th:replace="fragments/header"></div>
 
 
-    <div id="content">
+    <div id="content" style="margin-top: 70px;">
         <p>
 
         <form method="POST" enctype="multipart/form-data" action="/upload">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
             <table>
                 <tr>
@@ -41,14 +25,13 @@
         </form>
 
 
-
         <!--<h1>validation Test</h1>-->
         <!--<form action="#" th:action="@{/api/person/save}" th:object="${person}" method="post">-->
-            <!--<p>Password: <input type="text" th:field="*{userPassword}" /></p>-->
-            <!--<p>Name: <input type="text" th:field="*{fullName}" /></p>-->
-            <!--<p>Last Name: <input type="text" th:field="*{lastName}" /></p>-->
-            <!--<p><input type="submit" value="Submit" />-->
-                <!--<input type="reset" value="Reset" /></p>-->
+        <!--<p>Password: <input type="text" th:field="*{userPassword}" /></p>-->
+        <!--<p>Name: <input type="text" th:field="*{fullName}" /></p>-->
+        <!--<p>Last Name: <input type="text" th:field="*{lastName}" /></p>-->
+        <!--<p><input type="submit" value="Submit" />-->
+        <!--<input type="reset" value="Reset" /></p>-->
         <!--</form>-->
 
 
@@ -58,11 +41,7 @@
         </p>
     </div>
 
-    <div id="footer">
-        <p>
-
-        </p>
-    </div>
+    <div th:replace="fragments/footer"></div>
 </div>
 </body>
 </html>

@@ -9,9 +9,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import rashjz.info.app.sw.domain.User;
 import rashjz.info.app.sw.respositories.PersonRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,23 +22,20 @@ import java.util.List;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final PersonRepository personRepository;
     private final LoginAttemptService loginAttemptService;
-    private final HttpServletRequest request;
 
 
     @Autowired
     public CustomAuthenticationProvider(PersonRepository personRepository,
-                                        LoginAttemptService loginAttemptService,
-                                        HttpServletRequest request) {
+                                        LoginAttemptService loginAttemptService) {
         this.personRepository = personRepository;
         this.loginAttemptService = loginAttemptService;
-        this.request = request;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) {
         String ip = getClientIP();
         if (loginAttemptService.isBlocked(ip)) {
-            throw new LockedException("account locked for 10 minutes");
+            throw new LockedException("Account locked for 10 minutes");
         }
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
@@ -46,7 +45,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid credentials please check your username and password!");
         } else {
             log.info("Authentication passed with user : {} and password {}", username, password);
-            return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
+
+            return new UsernamePasswordAuthenticationToken(User.builder().isEnabled(true)
+                    .password(password)
+                    .username(username)
+                    .build(),
                     authentication.getCredentials(),
                     Collections.singletonList((GrantedAuthority) () -> "ROLE_USER"));
         }
@@ -54,12 +57,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 
     private String getClientIP() {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-
-        return xfHeader.split(",")[0];
+        return ((ServletRequestAttributes) RequestContextHolder
+                .currentRequestAttributes())
+                .getRequest()
+                .getRemoteAddr();
     }
 
     @Override

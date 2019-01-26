@@ -1,5 +1,6 @@
 package rashjz.info.app.sw.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 @Controller
 public class BookController {
 
@@ -26,10 +28,13 @@ public class BookController {
     }
 
     @GetMapping(value = "/listBooks")
-    public String listBooks(Model model, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+    public String listBooks(Model model, @RequestParam(value = "page" ,required = false)  Integer page,
+            @RequestParam(value = "size",required = false) Integer size) {
 
-        int currentPage = Optional.of(page).orElse(1);
-        int pageSize = Optional.of(size).orElse(5);
+        log.info("listBooks request received with page {} size {}", page, size);
+
+        int currentPage = Optional.ofNullable(page).orElse(1);
+        int pageSize = Optional.ofNullable(size).orElse(5);
 
         Page<Book> bookPage = bookService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
 
