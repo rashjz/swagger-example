@@ -60,6 +60,13 @@ public class PersonRepository {
         return ldapTemplate.search(q, new PersonContextMapper());
     }
 
+    public List<Person> findByUID(String name) {
+        LdapQuery q = query()
+                .where(LdapSchema.OBJECT_CLASS.getValue()).is("person")
+                .and(LdapSchema.UID.getValue()).whitespaceWildcardsLike(name);
+        return ldapTemplate.search(q, new PersonContextMapper());
+    }
+
     private Name buildDn(Person p) {
         return LdapNameBuilder.newInstance()
                 .add(LdapSchema.OU.getValue(), "people")

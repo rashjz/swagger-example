@@ -19,7 +19,6 @@ import java.util.Collections;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomAuthenticationProvider customAuthenticationProvider;
 
-
     @Autowired
     public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
         this.customAuthenticationProvider = customAuthenticationProvider;
@@ -35,13 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-//                .deleteCookies("SW_APP_SESSION")
+                .deleteCookies("SW_APP_SESSION")
                 .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated();
-        ;
+
 
     }
 
@@ -69,6 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //version 2
         auth.authenticationProvider(customAuthenticationProvider);
     }
+
+
 
 
     @Bean
