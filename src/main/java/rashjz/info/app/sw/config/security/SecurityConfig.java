@@ -27,15 +27,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .csrf()
+                .disable()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+//                .deleteCookies("SW_APP_SESSION")
+                .permitAll()
+                .and()
                 .authorizeRequests()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin() ;
+                .authenticated();
+        ;
 
     }
-
 
 
     @Override

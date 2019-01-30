@@ -8,9 +8,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties
 public class SwaggerExampleApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SwaggerExampleApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SwaggerExampleApplication.class, args);
+    }
 
 }
 

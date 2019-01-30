@@ -7,10 +7,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import rashjz.info.app.sw.domain.Authority;
 import rashjz.info.app.sw.domain.User;
 import rashjz.info.app.sw.respositories.PersonRepository;
 
@@ -46,12 +46,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         } else {
             log.info("Authentication passed with user : {} and password {}", username, password);
 
-            return new UsernamePasswordAuthenticationToken(User.builder().isEnabled(true)
+            User principal = User.builder().isEnabled(true)
                     .password(password)
                     .username(username)
-                    .build(),
-                    authentication.getCredentials(),
-                    Collections.singletonList((GrantedAuthority) () -> "ROLE_USER"));
+                    .authorities(Collections.singleton(Authority
+                            .builder()
+                            .authority("ROLE_USER")
+                            .build()))
+                    .build();
+            return new UsernamePasswordAuthenticationToken(principal, password, principal.getAuthorities());
+
         }
     }
 
