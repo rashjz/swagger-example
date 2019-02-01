@@ -9,20 +9,21 @@
     <div id="content" style="margin-top: 70px;">
         <p>
 
-        <form method="POST" enctype="multipart/form-data" action="/upload">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <form action="./upload?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 
-            <table>
+        <table>
                 <tr>
                     <td>File to upload:</td>
-                    <td><input type="file" name="file"/></td>
+                    <td><input type="file" name="mfile" /></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td><input type="submit" value="Upload"/></td>
                 </tr>
             </table>
-        </form>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    </form>
 
 
         <!--<h1>validation Test</h1>-->

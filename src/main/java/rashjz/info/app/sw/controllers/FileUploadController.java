@@ -21,9 +21,13 @@ public class FileUploadController {
     }
 
     @PostMapping(value = "/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
-
-        log.info("file upload content type = {} filename = {} name = {} ", file.getContentType(), file.getOriginalFilename(), file.getName());
+    public String handleFileUpload(
+            @RequestParam(value = "_csrf", required = false) String csrf,
+            @RequestParam(value = "mfile", required = false) MultipartFile file) {
+        log.info("csrf : {}", csrf);
+        log.info("file upload content type = {} filename = {} name = {} ", file.getContentType(),
+                file.getOriginalFilename(),
+                file.getName());
         return "uploadForm";
     }
 }

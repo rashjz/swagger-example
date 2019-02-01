@@ -17,6 +17,8 @@
                 <div th:if="${param.logout}" class="alert alert-success">
                     You have been logged out.
                 </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
                 <table>
                     <tr>
                         <td><label for="username">Username</label></td>

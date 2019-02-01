@@ -22,7 +22,6 @@ import java.util.Locale;
 
 @Configuration
 public class WebMVCConfig implements WebMvcConfigurer {
-
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -49,7 +48,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MultipartResolver filterMultipartResolver() {
+    public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
 
@@ -87,9 +86,12 @@ public class WebMVCConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/error").setViewName("error");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
+
 }

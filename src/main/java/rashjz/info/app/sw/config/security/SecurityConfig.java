@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Collections;
 
@@ -26,33 +29,49 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf()
-                .disable()
+        http.authorizeRequests()
+                .antMatchers("/error")
+                .permitAll()
+                .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
                 .and()
                 .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                //not recommended by spring better use post request to logout
+                .logoutSuccessUrl("/login")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
                 .deleteCookies("SW_APP_SESSION")
                 .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .csrf()
+                .csrfTokenRepository(csrfTokenRepository())
+        ;
 
 
     }
 
+    private CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-XSRF-TOKEN");
+        return repository;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**",
+        web.ignoring().antMatchers(
+                "/resources/**",
+                "/static/**",
                 "/v2/api-docs",
                 "/webjars/**",
-                "upload"
+                "/error"
         );
-
     }
 
     @Override
@@ -68,8 +87,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //version 2
         auth.authenticationProvider(customAuthenticationProvider);
     }
-
-
 
 
     @Bean
