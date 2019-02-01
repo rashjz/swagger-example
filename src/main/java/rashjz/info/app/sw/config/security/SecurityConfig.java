@@ -49,6 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .csrfTokenRepository(csrfTokenRepository())
+                .and()
+                .headers()
+                .httpStrictTransportSecurity()
+                .disable();
         ;
 
 
