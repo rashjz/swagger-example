@@ -1,7 +1,7 @@
 package rashjz.info.app.sw.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -18,14 +18,11 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
 
-    @Autowired
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
 
     @GetMapping(value = "/listBooks")
     public String listBooks(Model model, @RequestParam(value = "page" ,required = false)  Integer page,

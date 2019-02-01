@@ -1,7 +1,7 @@
 package rashjz.info.app.sw.config.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -19,17 +19,11 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final PersonRepository personRepository;
     private final LoginAttemptService loginAttemptService;
 
-
-    @Autowired
-    public CustomAuthenticationProvider(PersonRepository personRepository,
-                                        LoginAttemptService loginAttemptService) {
-        this.personRepository = personRepository;
-        this.loginAttemptService = loginAttemptService;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) {

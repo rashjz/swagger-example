@@ -4,13 +4,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
 import rashjz.info.app.sw.domain.Person;
 import rashjz.info.app.sw.domain.Product;
-import rashjz.info.app.sw.respositories.PersonRepository;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -19,13 +18,8 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("api")
 @Api(value = "product-details")
+@RequiredArgsConstructor
 public class HomeController {
-    private final PersonRepository personRepository;
-
-    @Autowired
-    public HomeController(final PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
 
 
     @ApiOperation(value = "View a list of available products", response = String.class)

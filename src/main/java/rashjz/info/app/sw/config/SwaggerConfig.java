@@ -1,7 +1,7 @@
 package rashjz.info.app.sw.config;
 
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rashjz.info.app.sw.config.properties.ApplicationProperties;
@@ -17,13 +17,10 @@ import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableSwagger2
+@RequiredArgsConstructor
 public class SwaggerConfig {
-    private final ApplicationProperties applicationProperties;
 
-    @Autowired
-    public SwaggerConfig(ApplicationProperties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
+    private final ApplicationProperties applicationProperties;
 
     @Bean
     public Docket productApi() {
