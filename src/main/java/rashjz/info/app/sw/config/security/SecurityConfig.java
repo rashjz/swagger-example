@@ -13,6 +13,7 @@ import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import rashjz.info.app.sw.config.properties.ApplicationProperties;
 
 import java.util.Collections;
 
@@ -21,7 +22,8 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final AuthenticationStrategyFactory authenticationStrategyFactory;
+    private final ApplicationProperties applicationProperties;
 
 
     @Override
@@ -77,16 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .ldapAuthentication()
-//                .userDnPatterns("uid={0},ou=people")
-//                .groupSearchBase("ou=groups")
-//                .contextSource(contextSource())
-//                .passwordCompare()
-//                .passwordEncoder(new LdapShaPasswordEncoder())
-//                .passwordAttribute("userPassword");
-        //version 2
-        auth.authenticationProvider(customAuthenticationProvider);
+        auth.authenticationProvider(authenticationStrategyFactory
+                .getAuthenticationProvider(applicationProperties.getAuthType()));
     }
 
 

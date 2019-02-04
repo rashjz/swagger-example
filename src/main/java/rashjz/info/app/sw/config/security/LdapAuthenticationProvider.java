@@ -18,9 +18,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@Component
+@Component("ldapAuthenticationProvider")
 @RequiredArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class LdapAuthenticationProvider implements AuthenticationProvider {
     private final PersonRepository personRepository;
     private final LoginAttemptService loginAttemptService;
 

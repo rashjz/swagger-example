@@ -16,4 +16,6 @@ public class ApplicationProperties {
     private String authorEmail;
     private String license;
     private String licenseUrl;
+    private String authType;
+
 }
