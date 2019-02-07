@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  docker-mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test
+      - MYSQL_PASSWORD=root
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: swagger-example
+    depends_on:
+      - docker-mysql
+    ports:
+      - 9997:9000
+    environment:
+      - DATABASE_HOST=docker-mysql
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_NAME=test
+      - DATABASE_PORT=3306

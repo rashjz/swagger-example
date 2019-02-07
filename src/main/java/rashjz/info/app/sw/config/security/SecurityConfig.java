@@ -9,12 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
 import rashjz.info.app.sw.config.properties.ApplicationProperties;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -28,42 +33,54 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/error")
+        http
+                .authorizeRequests()
+                .antMatchers("/error", "/api/**")
                 .permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .permitAll()
                 .and()
-                .logout()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated();
+
+        configure(http.logout());
+        configure(http.headers());
+        configure(http.csrf());
+        configure(http.cors());
+
+    }
+
+    private void configure(HeadersConfigurer<HttpSecurity> headers) {
+        headers.httpStrictTransportSecurity().disable();
+    }
+
+    private void configure(LogoutConfigurer<HttpSecurity> logout) {
+        logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 //not recommended by spring better use post request to logout
                 .logoutSuccessUrl("/login")
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
                 .deleteCookies("SW_APP_SESSION")
-                .permitAll()
-                .and()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .csrf()
-                .csrfTokenRepository(csrfTokenRepository())
-                .and()
-                .headers()
-                .httpStrictTransportSecurity()
-                .disable();
-        ;
-
-
+                .permitAll();
     }
 
-    private CsrfTokenRepository csrfTokenRepository() {
+    private void configure(CsrfConfigurer<HttpSecurity> csrf) {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
-        return repository;
+        csrf.csrfTokenRepository(repository);
+    }
+
+    private void configure(CorsConfigurer<HttpSecurity> cors) {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(applicationProperties.getCors().isAllowCredentials());
+        corsConfiguration.setAllowedOrigins(Arrays.asList(applicationProperties.getCors().getAllowOrigin().split(",")));
+        corsConfiguration.setAllowedHeaders(Arrays.asList(applicationProperties.getCors().getAllowHeaders().split(",")));
+        corsConfiguration.setAllowedMethods(Arrays.asList(applicationProperties.getCors().getAllowMethods().split(",")));
+        cors.configurationSource(httpServletRequest -> corsConfiguration);
     }
 
     @Override

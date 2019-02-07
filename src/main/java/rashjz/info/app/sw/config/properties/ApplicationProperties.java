@@ -18,4 +18,15 @@ public class ApplicationProperties {
     private String licenseUrl;
     private String authType;
 
+    private Cors cors;
+
+    @Data
+    public static class Cors{
+        private String allowOrigin;
+        private boolean allowCredentials;
+        private String allowHeaders;
+        private String allowMethods;
+        private Long maxAge;
+    }
+
 }

@@ -27,8 +27,8 @@ public class SwaggerExampleApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         userRepository.save(User.builder()
-                .password("test")
-                .username("test")
+                .password("admin")
+                .username("admin")
                 .isAccountNonLocked(true)
                 .isEnabled(true)
                 .authorities(Collections.singleton(Authority.builder()
