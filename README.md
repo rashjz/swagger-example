@@ -1,10 +1,10 @@
 # swagger-example
 This product is only for testing and educational purpose 
-######Swagger useful links  
+###### Swagger useful links  
 * http://localhost:9000/swagger-ui.html
 * http://localhost:9000/v2/api-docs
 
-######Embedded Container https support added
+###### Embedded Container https support added
 * Create certificate for https 
 ```java
 keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
@@ -22,7 +22,7 @@ keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keyst
         return connector;
     }
 ```
-######Docker Environment for development
+###### Docker Environment for development
 * to create docker container run: 
 ```jshelllanguage
 $ docker-compose build
