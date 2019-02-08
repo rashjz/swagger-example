@@ -24,11 +24,7 @@ services:
     logging:
       driver: json-file
     environment:
-      - DATABASE_HOST=docker-mysql
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=root
-      - DATABASE_NAME=test
-      - DATABASE_PORT=3306
+      - spring_profiles_active=pro
     hostname: app-host
     networks:
       - spring-cloud-network
