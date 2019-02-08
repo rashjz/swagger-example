@@ -1,13 +1,14 @@
 # swagger-example
+This product is only for testing and educational purpose 
+######Swagger useful links  
+* http://localhost:9000/swagger-ui.html
+* http://localhost:9000/v2/api-docs
 
-http://localhost:8080/swagger-ui.html#!/home-controller/getAppProductDetailsUsingGET
-
-http://localhost:8080/v2/api-docs
-
-
+######Embedded Container https support added
 * Create certificate for https 
-###### keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
-
+```java
+keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
+```
 
 * redirect 8080 port to tomcat https (8443) port
 
@@ -21,7 +22,7 @@ http://localhost:8080/v2/api-docs
         return connector;
     }
 ```
-
+######Docker Environment for development
 * to create docker container run: 
 ```jshelllanguage
 $ docker-compose build
@@ -31,4 +32,8 @@ $ docker-compose up
 ```jshelllanguage
 $ docker ps
 $ docker docker exec -it <docker-id> /bin/bash
+```
+* For testing purpose to activate "pro" set VM parameter
+```jshelllanguage
+-Dspring.profiles.active=pro
 ```
