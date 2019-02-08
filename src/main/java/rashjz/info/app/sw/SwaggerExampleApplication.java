@@ -12,6 +12,7 @@ import rashjz.info.app.sw.respositories.UserRepository;
 
 import java.util.Collections;
 
+
 @Slf4j
 @SpringBootApplication
 @EnableConfigurationProperties

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity
+@Entity(name = "USERS")
 @Data
 @Builder
 @AllArgsConstructor@NoArgsConstructor@ToString

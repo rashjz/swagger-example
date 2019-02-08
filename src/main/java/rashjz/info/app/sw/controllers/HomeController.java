@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
 import rashjz.info.app.sw.domain.Person;
@@ -17,7 +18,9 @@ import java.math.BigDecimal;
 @Slf4j
 @RestController
 @RequestMapping("api")
-@Api(value = "product-details")
+@Api(value = "product-details",
+        consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RequiredArgsConstructor
 public class HomeController {
 
@@ -56,7 +59,7 @@ public class HomeController {
     public Person savePerson(@Valid @ModelAttribute Person person, BeanPropertyBindingResult bindingResult) {
         bindingResult
                 .getFieldErrors()
-                .forEach(f -> System.out.println(f.getField() + ": " + f.getDefaultMessage()));
+                .forEach(f -> log.error(f.getField() + " : " + f.getDefaultMessage()));
 
         log.info("person is {}", person);
         return person;

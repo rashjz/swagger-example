@@ -7,6 +7,11 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=test
       - MYSQL_PASSWORD=root
+    hostname: mysql-host
+    ports:
+      - 3306:3306
+    networks:
+      - spring-cloud-network
   spring-boot-app:
     build:
       context: .
@@ -16,9 +21,33 @@ services:
       - docker-mysql
     ports:
       - 9997:9000
+    logging:
+      driver: json-file
     environment:
       - DATABASE_HOST=docker-mysql
       - DATABASE_USER=root
       - DATABASE_PASSWORD=root
       - DATABASE_NAME=test
       - DATABASE_PORT=3306
+    hostname: app-host
+    networks:
+      - spring-cloud-network
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - spring-cloud-network
+    depends_on:
+      - docker-mysql
+      - spring-boot-app
+#    volumes:
+#      - /opt/prometheus/conf:/etc/prometheus
+#      - /opt/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - 9093:9090
+networks:
+  spring-cloud-network:
+    driver: bridge

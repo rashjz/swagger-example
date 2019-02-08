@@ -22,3 +22,13 @@ http://localhost:8080/v2/api-docs
     }
 ```
 
+* to create docker container run: 
+```jshelllanguage
+$ docker-compose build
+$ docker-compose up
+```
+* For to connect docker container 
+```jshelllanguage
+$ docker ps
+$ docker docker exec -it <docker-id> /bin/bash
+```

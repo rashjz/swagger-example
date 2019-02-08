@@ -1,6 +1,6 @@
 package rashjz.info.app.sw.util;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 public enum LdapSchema {
 
@@ -19,7 +19,7 @@ public enum LdapSchema {
       private final String value;
 
     public static LdapSchema findByVal(String filter) {
-        return Arrays.stream(values())
+        return Stream.of(values())
                 .filter(val -> filter.equalsIgnoreCase(val.value))
                 .findFirst()
                 .orElse(LdapSchema.NONE);
