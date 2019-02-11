@@ -22,11 +22,22 @@ import rashjz.info.app.sw.config.properties.ApplicationProperties;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static rashjz.info.app.sw.util.AppConstraints.*;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String COMMA_SEPARATOR = ",";
+    private static final String[] IGNORED_REQUEST_CONFIGURER = {
+            "/resources/**",
+            "/static/**",
+            "/v2/api-docs",
+            "/webjars/**",
+            "/error"};
+
     private final AuthenticationStrategyFactory authenticationStrategyFactory;
     private final ApplicationProperties applicationProperties;
 
@@ -64,34 +75,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login")
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("SW_APP_SESSION")
+                .deleteCookies(SESSION_COOKIE_NAME)
                 .permitAll();
     }
 
     private void configure(CsrfConfigurer<HttpSecurity> csrf) {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
+        repository.setHeaderName(CSRF_HEADER_NAME);
         csrf.csrfTokenRepository(repository);
     }
 
     private void configure(CorsConfigurer<HttpSecurity> cors) {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(applicationProperties.getCors().isAllowCredentials());
-        corsConfiguration.setAllowedOrigins(Arrays.asList(applicationProperties.getCors().getAllowOrigin().split(",")));
-        corsConfiguration.setAllowedHeaders(Arrays.asList(applicationProperties.getCors().getAllowHeaders().split(",")));
-        corsConfiguration.setAllowedMethods(Arrays.asList(applicationProperties.getCors().getAllowMethods().split(",")));
+        if (applicationProperties.getCors().isAllowed()) {
+            corsConfiguration.setAllowCredentials(applicationProperties.getCors().isAllowCredentials());
+            corsConfiguration.setAllowedOrigins(Arrays.asList(applicationProperties.getCors().getAllowOrigin().split(COMMA_SEPARATOR)));
+            corsConfiguration.setAllowedHeaders(Arrays.asList(applicationProperties.getCors().getAllowHeaders().split(COMMA_SEPARATOR)));
+            corsConfiguration.setAllowedMethods(Arrays.asList(applicationProperties.getCors().getAllowMethods().split(COMMA_SEPARATOR)));
+        }
         cors.configurationSource(httpServletRequest -> corsConfiguration);
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                "/resources/**",
-                "/static/**",
-                "/v2/api-docs",
-                "/webjars/**",
-                "/error"
-        );
+        web.ignoring().antMatchers(IGNORED_REQUEST_CONFIGURER);
     }
 
     @Override

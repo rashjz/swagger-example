@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "spring.ldap.embedded")
 public class LdapProperties {
+
     private String ldif;
     private String baseDn;
     private String port;

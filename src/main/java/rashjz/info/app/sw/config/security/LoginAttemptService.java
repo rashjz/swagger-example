@@ -12,12 +12,14 @@ import java.util.concurrent.TimeUnit;
 public class LoginAttemptService {
 
     private static final int MAX_ATTEMPT = 10;
+    private static final long EXPIRE_DURATION = 10;
+
     private LoadingCache<String, Integer> attemptsCache;
 
     public LoginAttemptService() {
         super();
         attemptsCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .expireAfterWrite(EXPIRE_DURATION, TimeUnit.MINUTES)
                 .build(new CacheLoader<String, Integer>() {
             public Integer load(String key) {
                 return 0;

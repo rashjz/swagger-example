@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
+
     private String description;
     private String version;
     private String title;
@@ -22,6 +23,8 @@ public class ApplicationProperties {
 
     @Data
     public static class Cors{
+
+        private boolean allowed;
         private String allowOrigin;
         private boolean allowCredentials;
         private String allowHeaders;

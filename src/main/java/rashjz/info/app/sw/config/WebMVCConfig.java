@@ -20,6 +20,9 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import java.util.Locale;
 
+import static org.apache.commons.lang.CharEncoding.UTF_8;
+import static rashjz.info.app.sw.util.AppConstraints.*;
+
 @Configuration
 public class WebMVCConfig implements WebMvcConfigurer {
     @Bean
@@ -53,7 +56,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
 
     @Bean
     public ServletContextInitializer servletContextInitializer() {
-        return servletContext -> servletContext.getSessionCookieConfig().setName("SW_APP_SESSION");
+        return servletContext -> servletContext.getSessionCookieConfig().setName(SESSION_COOKIE_NAME);
     }
 
 
@@ -70,14 +73,14 @@ public class WebMVCConfig implements WebMvcConfigurer {
         ret.setBasename("classpath:messages/messages");
         ret.setUseCodeAsDefaultMessage(true);
         ret.setFallbackToSystemLocale(false);
-        ret.setDefaultEncoding("UTF-8");
+        ret.setDefaultEncoding(UTF_8);
         return ret;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("locale");
+        localeChangeInterceptor.setParamName(LOCALE_PARAM_NAME);
         return localeChangeInterceptor;
     }
 
