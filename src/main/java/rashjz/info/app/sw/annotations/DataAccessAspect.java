@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 public class DataAccessAspect {
 
     @Around("@annotation(dataAccessEvent)")
-    public Object forI9Id(ProceedingJoinPoint joinPoint, DataAccessEvent dataAccessEvent)
+    public Object forParamName(ProceedingJoinPoint joinPoint, DataAccessEvent dataAccessEvent)
             throws Throwable {
         Object proceed = joinPoint.proceed();
         if (checkResponse(proceed)) {
-            String paramValue = getParamValue(joinPoint, dataAccessEvent.paramName());
+            Integer paramValue = getParamValue(joinPoint, dataAccessEvent.paramName());
             log.info("parameter is {}", paramValue);
         }
         return proceed;
@@ -38,10 +38,10 @@ public class DataAccessAspect {
         throw new IllegalArgumentException("No such parameter : " + paramName);
     }
 
-    private String getParamValue(ProceedingJoinPoint joinPoint, String paramName) {
+    private Integer getParamValue(ProceedingJoinPoint joinPoint, String paramName) {
         int packetIdParamIdx = findParamIdx(joinPoint, paramName);
         try {
-            return (String) joinPoint.getArgs()[packetIdParamIdx];
+            return (Integer) joinPoint.getArgs()[packetIdParamIdx];
         } catch (ClassCastException classCastException) {
             throw new IllegalArgumentException("Parameter : " + paramName + " cannot be cast to String",
                     classCastException);
