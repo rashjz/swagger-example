@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import rashjz.info.app.sw.annotations.DataAccessEvent;
 import rashjz.info.app.sw.domain.Book;
 import rashjz.info.app.sw.service.BookService;
 
@@ -25,6 +26,7 @@ public class BookController {
 
 
     @GetMapping(value = "/listBooks")
+    @DataAccessEvent( paramName = "page", eventKey = "PDF_Downloaded", eventDescription = "I9 PDF accessed")
     public String listBooks(Model model, @RequestParam(value = "page" ,required = false)  Integer page,
             @RequestParam(value = "size",required = false) Integer size) {
 
